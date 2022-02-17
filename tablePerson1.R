@@ -4,6 +4,7 @@ library(tigger)
 library(stringr)
 library(Biostrings)
 
+
 germline <- readIgFasta("C:/Users/wrach/OneDrive - Bar-Ilan University/Documents/׳‘׳™׳•׳׳™׳ ׳₪׳•׳¨׳׳˜׳™׳§׳”/׳₪׳¨׳•׳™׳™׳§׳˜/projectPerson1/IGHV_gap_full.fasta")
 # get germline reference
 dataP1 <- read.table(file = "C:/Users/wrach/OneDrive - Bar-Ilan University/Documents/׳‘׳™׳•׳׳™׳ ׳₪׳•׳¨׳׳˜׳™׳§׳”/׳₪׳¨׳•׳™׳™׳§׳˜/projectPerson1/P1_I64_S1_collapsed.tsv", sep = '\t', header = TRUE)
