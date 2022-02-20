@@ -87,20 +87,24 @@ for (g in genes) {
     new_row <- data.frame(g, paste(alleles, collapse = ","), paste(allele_count, collapse = ","), a, paste(novel$polymorphism_call, collapse = ","), paste(found_novel, collapse = ","), paste(note, collapse = ","))
     names(new_row) <- c("Gene", "Allele", "Count", "Refrence", "Polymorphism_call", "Novel", "notes") #df column titles
     final_df <- dplyr::bind_rows(final_df, new_row) # add row
-  }
+  }final_df20.0
 }
+
+write.csv(final_df,"C:/Users/wrach/OneDrive - Bar-Ilan University/Documents/ביואינפורמטיקה/פרוייקט/tiggerTable/final_df20_02.csv", row.names = FALSE)
 
 library(data.table)
 novel_list_df <- data.table::rbindlist(novel_list)
-check<-data[data$v_call == "IGHV4-4*02",]
-check<-check$sequence_alignment[1]
-check
-gm1 <- germline["IGHV4-4*02"]
-gm2 <- check
+write.csv(novel_list_df,"C:/Users/wrach/OneDrive - Bar-Ilan University/Documents/ביואינפורמטיקה/פרוייקט/tiggerTable/novel_list_df20_02.csv", row.names = FALSE)
+
+# check<-data[data$v_call == "IGHV4-4*02",]
+# check<-check$sequence_alignment[1]
+# check
+# gm1 <- germline["IGHV4-4*02"]
+# gm2 <- check
 # print(gm2)
 # gm2 <- novel_list_df$novel_imgt[novel_list_df$polymorphism_call=="IGHV4-34*12_T170A"][1] #first column
 # print(gm2)
 # gm3 <- germline["IGHV4-34*01"] # refrence
 # 
-germs <- lapply(c(gm1,gm2), function(x) strsplit(x, '')[[1]])
-germs_m <- t(sapply(germs, `length<-`, max(lengths(germs))))
+# germs <- lapply(c(gm1,gm2), function(x) strsplit(x, '')[[1]])
+# germs_m <- t(sapply(germs, `length<-`, max(lengths(germs))))
