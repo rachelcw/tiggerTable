@@ -2,6 +2,7 @@
 # and group for each v_gene all v_calls (group by & summarise)
 # transforms it into a vector (pull)
 gene_allele <- filtered_data %>% mutate(v_gene = getGene(v_call, strip_d = F)) %>% group_by(v_gene) %>% summarise(v_call = paste0(unique(v_call), collapse = ","))
+
 #new tigger - 
 #allele_diff <- function(germs) {
 #  germs <- lapply(germs, function(x) strsplit(x, '')[[1]])
