@@ -4,6 +4,16 @@ library(tigger)
 library(stringr)
 library(Biostrings)
 source('functions_tigger.R')
+# # vec of strings racheli
+# germline <- readIgFasta("C:/Users/wrach/OneDrive - Bar-Ilan University/Documents/ביואינפורמטיקה/פרוייקט/tiggerTable/IGHV_gap_full.fasta")
+# # get germline reference
+# dataP1 <- read.table(file = "C:/Users/wrach/OneDrive - Bar-Ilan University/Documents/ביואינפורמטיקה/פרוייקט/tiggerTable/P1_I64_S1_collapsed.tsv", sep = '\t', header = TRUE)
+
+
+# vec of strings eden
+#germline <- readIgFasta("C:/Users/Eden/OneDrive - Bar-Ilan University/Desktop/tigger/IGHV_gap_full.fasta")
+# get germline reference
+#dataP1 <- read.table(file = "C:/Users/Eden/OneDrive - Bar-Ilan University/Desktop/tigger/P1_I64_S1_collapsed.tsv", sep = '\t', header = TRUE)
 
 
 germline <- readIgFasta("C:/Users/wrach/OneDrive - Bar-Ilan University/Documents/ביואינפורמטיקה/פרוייקט/tiggerTable/IGHV_gap_full.fasta")
@@ -21,9 +31,10 @@ gene_allele_filter <- filtered_data %>% mutate(v_gene = getGene(v_call, strip_d 
 # data -> person
 data <- filtered_data %>% mutate(v_alleles = getAllele(v_call, strip_d = F, first = T)) %>% mutate(v_gene = getGene(v_call, strip_d = F)) 
 genes <- unique(data$v_gene)
-final_df <- c()
+final_df_g <- c()
 novel <- c()
 novel_list <- list()
+genes<-'IGHV4-34'
 for (g in genes) {
   alleles <- unique(data$v_alleles[data$v_gene == g])
   allele_count <- c()
@@ -59,8 +70,13 @@ for (g in genes) {
     note<- c()
     for (n in novel$novel_imgt){ # seq in novels from tigger function
       for (a_new in unique(v_call_original)[!unique(v_call_original)%in%a]) {
-        # n is the seq of the novel 
-        allele_name<- names(germline)[germline==n]
+        # n is the seq of the novel
+        if(is.na(n)){
+          # didnt find novel allele
+          allele_name<-NULL
+        }else{
+          allele_name<- names(germline)[germline==n]
+        }
         if (length(allele_name)!= 0){
           # n is found in the reference and we know the specific name of the allele
           found_novel <- c(found_novel,allele_name) 
@@ -89,9 +105,9 @@ for (g in genes) {
     }
     ######################## 
     # create conclusion final table
-    new_row <- data.frame(g, paste(alleles, collapse = ","), paste(allele_count, collapse = ","), a, paste(novel$polymorphism_call, collapse = ","), paste(found_novel, collapse = ","), paste(note, collapse = ","))
-    names(new_row) <- c("Gene", "Allele", "Count", "Refrence", "Polymorphism_call", "Novel", "notes") #df column titles
-    final_df <- dplyr::bind_rows(final_df, new_row) # add row
+    new_row <- data.frame(g, paste(alleles, collapse = ","), paste(allele_count, collapse = ","), a, novel$note[1] ,paste(novel$polymorphism_call, collapse = ","), paste(found_novel, collapse = ","), paste(note, collapse = ","))
+    names(new_row) <- c("Gene", "Allele", "Count", "Refrence","tigger note", "Polymorphism_call", "Novel", "notes") #df column titles
+    final_df_g<- dplyr::bind_rows(final_df, new_row) # add row
   }
 }
 
@@ -99,20 +115,7 @@ for (g in genes) {
 #write.csv(final_df,"C:/Users/wrach/OneDrive - Bar-Ilan University/Documents/ביואינפורמטיקה/פרוייקט/tiggerTable/final_df20_02.csv", row.names = FALSE)
 
 library(data.table)
-novel_list_df <- data.table::rbindlist(novel_list) #df with the results from findNovelAllele
+novel_list_df_g <- data.table::rbindlist(novel_list) #df with the results from findNovelAllele
 #write.csv(novel_list_df,"C:/Users/wrach/OneDrive - Bar-Ilan University/Documents/ביואינפורמטיקה/פרוייקט/tiggerTable/novel_list_df20_02.csv", row.names = FALSE)
 
 
-
-# check<-data[data$v_call == "IGHV4-4*02",]
-# check<-check$sequence_alignment[1]
-# check
-# gm1 <- germline["IGHV4-4*02"]
-# gm2 <- check
-# print(gm2)
-# gm2 <- novel_list_df$novel_imgt[novel_list_df$polymorphism_call=="IGHV4-34*12_T170A"][1] #first column
-# print(gm2)
-# gm3 <- germline["IGHV4-34*01"] # refrence
-# 
-# germs <- lapply(c(gm1,gm2), function(x) strsplit(x, '')[[1]])
-# germs_m <- t(sapply(germs, `length<-`, max(lengths(germs))))
