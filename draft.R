@@ -1,8 +1,27 @@
+germline <- readIgFasta("C:/Users/wrach/OneDrive - Bar-Ilan University/Documents/ביואינפורמטיקה/פרוייקט/tiggerTable/IGHV_gap_full.fasta")
+seq_germline<-unname(germline) # get only the sequenes in the germline
+
+allele_diff <- function(germs) {
+  germs <- lapply(germs, function(x) strsplit(x, '')[[1]])
+  View(germs)
+  germs_m <- t(sapply(germs, `length<-`, max(lengths(germs))))
+  View(germs_m)
+  setdiff_mat <- function(x) {
+    sum(!unique(x) %in% c('.', NA, "N"))
+  }
+  idx = which(apply(germs_m, 2, setdiff_mat) > 1)
+  return(idx)
+}
+
+check<-allele_diff(germline)
+
 #1. get only the gene instead of whole vcall (mutate func) 
 # and group for each v_gene all v_calls (group by & summarise)
 # transforms it into a vector (pull)
-gene_allele <- filtered_data %>% mutate(v_gene = getGene(v_call, strip_d = F)) %>% group_by(v_gene) %>% summarise(v_call = paste0(unique(v_call), collapse = ","))
 
+#gene_allele <- filtered_data %>% mutate(v_gene = getGene(v_call, strip_d = F)) %>% group_by(v_gene) %>% summarise(v_call = paste0(unique(v_call), collapse = ","))
+
+#table<-read.csv("~/ביואינפורמטיקה/פרוייקט/tiggerTable/final_df20_02.csv")
 #new tigger - 
 #allele_diff <- function(germs) {
 #  germs <- lapply(germs, function(x) strsplit(x, '')[[1]])
