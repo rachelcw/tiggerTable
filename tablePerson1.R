@@ -31,10 +31,9 @@ gene_allele_filter <- filtered_data %>% mutate(v_gene = getGene(v_call, strip_d 
 # data -> person
 data <- filtered_data %>% mutate(v_alleles = getAllele(v_call, strip_d = F, first = T)) %>% mutate(v_gene = getGene(v_call, strip_d = F)) 
 genes <- unique(data$v_gene)
-final_df_g <- c()
+final_df <- c()
 novel <- c()
 novel_list <- list()
-genes<-'IGHV4-34'
 for (g in genes) {
   alleles <- unique(data$v_alleles[data$v_gene == g])
   allele_count <- c()
@@ -74,9 +73,10 @@ for (g in genes) {
         if(is.na(n)){
           # didnt find novel allele
           allele_name<-NULL
+          note<-c(note, "Suspected-y")
         }else{
           allele_name<- names(germline)[germline==n]
-        }
+        
         if (length(allele_name)!= 0){
           # n is found in the reference and we know the specific name of the allele
           found_novel <- c(found_novel,allele_name) 
@@ -99,6 +99,7 @@ for (g in genes) {
               note<-c(note, "Suspected")
               # we need to analyze the reason
             }
+          }
          }
        }
       }
@@ -107,7 +108,7 @@ for (g in genes) {
     # create conclusion final table
     new_row <- data.frame(g, paste(alleles, collapse = ","), paste(allele_count, collapse = ","), a, novel$note[1] ,paste(novel$polymorphism_call, collapse = ","), paste(found_novel, collapse = ","), paste(note, collapse = ","))
     names(new_row) <- c("Gene", "Allele", "Count", "Refrence","tigger note", "Polymorphism_call", "Novel", "notes") #df column titles
-    final_df_g<- dplyr::bind_rows(final_df, new_row) # add row
+    final_df<- dplyr::bind_rows(final_df, new_row) # add row
   }
 }
 
@@ -115,7 +116,7 @@ for (g in genes) {
 #write.csv(final_df,"C:/Users/wrach/OneDrive - Bar-Ilan University/Documents/ביואינפורמטיקה/פרוייקט/tiggerTable/final_df20_02.csv", row.names = FALSE)
 
 library(data.table)
-novel_list_df_g <- data.table::rbindlist(novel_list) #df with the results from findNovelAllele
+novel_list_df<- data.table::rbindlist(novel_list) #df with the results from findNovelAllele
 #write.csv(novel_list_df,"C:/Users/wrach/OneDrive - Bar-Ilan University/Documents/ביואינפורמטיקה/פרוייקט/tiggerTable/novel_list_df20_02.csv", row.names = FALSE)
 
 
